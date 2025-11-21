@@ -62,8 +62,9 @@
 
         h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 4rem;
-            margin-bottom: 10px;
+            font-size: 3rem;
+            /* Reduced size */
+            margin-bottom: 5px;
             background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -72,26 +73,33 @@
         }
 
         .status-text {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
+            /* Reduced size */
             color: #aaa;
-            margin-bottom: 40px;
-            min-height: 30px;
+            margin-bottom: 20px;
+            /* Reduced margin */
+            min-height: 25px;
         }
 
         /* The Core / Orb */
         .orb-container {
             position: relative;
-            width: 200px;
-            height: 200px;
-            margin: 0 auto 50px;
+            width: 150px;
+            /* Reduced size */
+            height: 150px;
+            /* Reduced size */
+            margin: 0 auto 30px;
+            /* Reduced margin */
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         .orb {
-            width: 120px;
-            height: 120px;
+            width: 90px;
+            /* Reduced size */
+            height: 90px;
+            /* Reduced size */
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, var(--primary-color), #000);
             box-shadow:
@@ -126,22 +134,28 @@
         }
 
         .ring:nth-child(1) {
-            width: 160px;
-            height: 160px;
+            width: 120px;
+            /* Reduced size */
+            height: 120px;
+            /* Reduced size */
             animation-duration: 4s;
         }
 
         .ring:nth-child(2) {
-            width: 190px;
-            height: 190px;
+            width: 140px;
+            /* Reduced size */
+            height: 140px;
+            /* Reduced size */
             animation-duration: 7s;
             border-width: 1px;
             animation-direction: reverse;
         }
 
         .ring:nth-child(3) {
-            width: 230px;
-            height: 230px;
+            width: 170px;
+            /* Reduced size */
+            height: 170px;
+            /* Reduced size */
             animation-duration: 12s;
             border-top-color: transparent;
             border-left-color: var(--primary-color);
@@ -184,10 +198,11 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            padding: 20px;
+            padding: 15px;
             width: 80%;
             margin: 0 auto;
-            height: 150px;
+            height: 120px;
+            /* Reduced height */
             overflow-y: auto;
             text-align: left;
             font-family: 'Courier New', monospace;
@@ -195,9 +210,10 @@
         }
 
         .log-entry {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 5px;
+            padding-bottom: 4px;
+            font-size: 0.9rem;
         }
 
         .user-msg {
@@ -223,25 +239,55 @@
         }
 
         .controls {
-            margin-top: 20px;
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
         }
 
         button {
             background: transparent;
             border: 1px solid var(--primary-color);
             color: var(--primary-color);
-            padding: 10px 20px;
+            padding: 8px 16px;
+            /* Reduced padding */
             font-family: 'Orbitron', sans-serif;
             cursor: pointer;
             transition: 0.3s;
             text-transform: uppercase;
             letter-spacing: 2px;
+            font-size: 0.9rem;
         }
 
         button:hover {
             background: var(--primary-color);
             color: black;
             box-shadow: 0 0 20px var(--primary-color);
+        }
+
+        select {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--secondary-color);
+            color: white;
+            padding: 6px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            border-radius: 5px;
+            outline: none;
+            width: 100%;
+            max-width: 300px;
+            cursor: pointer;
+        }
+
+        select option {
+            background: #050510;
+            color: white;
         }
     </style>
 </head>
@@ -262,9 +308,9 @@
         </div>
 
         <!-- Manual Input for Debugging -->
-        <div style="margin-bottom: 20px;">
-            <input type="text" id="manualInput" placeholder="Type command here (e.g., 'open calculator')"
-                style="padding: 10px; width: 300px; border-radius: 5px; border: none;">
+        <div style="margin-bottom: 15px;">
+            <input type="text" id="manualInput" placeholder="Type command here..."
+                style="padding: 8px; width: 250px; border-radius: 5px; border: none;">
             <button onclick="sendManualCommand()">Send</button>
         </div>
 
@@ -273,8 +319,13 @@
         </div>
 
         <div class="controls">
-            <button id="startBtn" onclick="activateTuuna()">Start Listening</button>
-            <button onclick="toggleHelp()">Commands</button>
+            <select id="voiceSelect" onchange="testVoice()">
+                <option value="">Loading Voices...</option>
+            </select>
+            <div class="button-group">
+                <button id="startBtn" onclick="activateTuuna()">Start Listening</button>
+                <button onclick="toggleHelp()">Commands</button>
+            </div>
         </div>
     </div>
 
@@ -302,6 +353,58 @@
         const chatLog = document.getElementById('chatLog');
         const manualInput = document.getElementById('manualInput');
         const helpModal = document.getElementById('helpModal');
+        const voiceSelect = document.getElementById('voiceSelect');
+
+        let voices = [];
+
+        function populateVoices() {
+            const allVoices = window.speechSynthesis.getVoices();
+            voiceSelect.innerHTML = '';
+            voices = [];
+
+            allVoices.forEach((voice) => {
+                // Filter for English, Hindi, and Indian languages
+                const lang = voice.lang.toLowerCase();
+                const name = voice.name.toLowerCase();
+
+                if (lang.startsWith('en') || lang.startsWith('hi') || name.includes('india') || name.includes('hindi')) {
+                    voices.push(voice);
+                    const option = document.createElement('option');
+                    option.textContent = `${voice.name} (${voice.lang})`;
+                    option.value = voice.name; // Use name as value for easier lookup
+
+                    if (voice.default) {
+                        option.textContent += ' -- DEFAULT';
+                    }
+
+                    option.setAttribute('data-lang', voice.lang);
+                    option.setAttribute('data-name', voice.name);
+                    voiceSelect.appendChild(option);
+                }
+            });
+
+            if (voices.length === 0) {
+                const option = document.createElement('option');
+                option.textContent = "No matching voices found";
+                voiceSelect.appendChild(option);
+            }
+
+            // Try to select a good default if available
+            const preferredIndex = voices.findIndex(voice => voice.name.includes('Google US English') || voice.name.includes('Zira'));
+            if (preferredIndex !== -1) {
+                voiceSelect.selectedIndex = preferredIndex;
+            }
+        }
+
+        populateVoices();
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = populateVoices;
+        }
+
+        function testVoice() {
+            // Optional: Speak a short phrase when voice changes to confirm selection
+            // speak("Voice changed."); 
+        }
 
         function toggleHelp() {
             if (helpModal.style.display === 'none') {
@@ -437,9 +540,16 @@
 
             const utterance = new SpeechSynthesisUtterance(text);
 
-            const voices = window.speechSynthesis.getVoices();
-            const preferredVoice = voices.find(voice => voice.name.includes('Google US English') || voice.name.includes('Zira'));
-            if (preferredVoice) utterance.voice = preferredVoice;
+            // Use selected voice
+            if (voiceSelect.selectedOptions.length > 0) {
+                const selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
+                const allVoices = window.speechSynthesis.getVoices();
+                const selectedVoice = allVoices.find(voice => voice.name === selectedOption);
+
+                if (selectedVoice) {
+                    utterance.voice = selectedVoice;
+                }
+            }
 
             utterance.onend = () => {
                 isSpeaking = false;

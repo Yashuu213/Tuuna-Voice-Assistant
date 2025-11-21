@@ -214,6 +214,14 @@ def ask_gemini_brain(user_command):
     - Files: {"action": "file", "sub": "open", "target": "filename_approximate"}
     - Delay: {"action": "delay", "target": "seconds_to_wait"} (IMPORTANT: Use this between opening an app and typing in it!)
 
+    Special Instructions:
+    - If user says "search [query] on gpt" or "ask gpt [query]":
+      Output a sequence: 
+      1. Open "https://chatgpt.com"
+      2. Delay 5 seconds
+      3. Type the [query]
+      4. Press "enter"
+
     If it is a CHAT/QUESTION (e.g. "Who is...", "Tell me a joke", "Help me write"), output a normal plain text response. Do NOT output JSON for chat.
     
     User Command: 
