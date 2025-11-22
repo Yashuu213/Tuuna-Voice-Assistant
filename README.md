@@ -135,7 +135,7 @@ Use Windows client for automation.
 
 ## ❤️ Creator
 
-Made by **Yash Sharma** — AI/ML & Full Stack Developer.
+Made by **Yash Sharma** — AI/ML  Developer.
 
 ---
 
