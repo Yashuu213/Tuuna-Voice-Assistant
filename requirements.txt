@@ -7,3 +7,5 @@ psutil
 winshell
 google-generativeai
 pypiwin32
+gunicorn
+
