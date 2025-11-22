@@ -27,7 +27,7 @@ CORS(app)
 
 # --- Configuration ---
 # Replace with your actual API Key
-API_KEY = "AIzaSyAGASmap2AyUpY_h8roYd09Dp-1kFlbBFE" 
+API_KEY = "Your API KEY" 
 
 if AI_AVAILABLE:
     genai.configure(api_key=API_KEY)
